@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Analyste (to resolve review blockers with the user)
-- State: Relecteur-réfuteur review complete; blocking follow-up required.
+- Current role: Architecte
+- State: Analyste follow-up complete; ready for Architecte to reconcile the confirmed constraints and full product scope with the design. The prior review blockers are not waived; the implementation gaps remain to be addressed.
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -16,28 +16,30 @@ This initial product scope supports planning a garden, managing plants and trees
 - Provide two core views: Planning and Plan.
 - Planning should provide both a chronological to-do list and a calendar.
 - Automatically suggest seasonal tasks based on the user's recorded plants, including actions such as planting, pruning, and harvesting. The user can edit suggested tasks and add personal tasks that are not tied to an automatically suggested plant task.
-- Show crop and care recommendations only when the user asks; do not proactively interrupt the user with recommendations.
-- Recommendations and seasonal task timing should be relevant to Tournai, Belgium. Gardening facts are context-dependent and should come from reliable, locally relevant sources; distinguish advice from user-entered observations and avoid presenting uncertain guidance as universal fact.
+- Show robust crop and care recommendations only when the user asks; do not proactively interrupt the user with recommendations. Recommendations must be locally relevant to Tournai, Belgium.
+- Provide seasonal planting, pruning, and harvest tasks relevant to the user's recorded plants; the current two broad seasonal observation reminders are not an accepted substitute for this scope.
+- Gardening facts are context-dependent and should come from reliable, locally relevant sources; distinguish advice from user-entered observations and avoid presenting uncertain guidance as universal fact.
 - The Plan view should let the user create simple garden areas and click/select them. Approximate real dimensions are required, using metric units; precise CAD-level accuracy is not required.
 - The user should be able to create plant and tree records containing at least a name/type, location on the plan, and planting date.
 - Changes made on the PC should sync to the user's phone over the internet.
 - The first version is for the user's personal garden and own devices; multi-person sharing is out of scope.
-- A free online storage option is required for personal use, with reasonable free-tier limits acceptable but no recurring cost.
-- The user authorizes the implementation role to select a provider only after verifying privacy, free-tier limits, export/deletion, and zero-recurring-cost fit. This does not authorize public access or a recurring-cost provider.
-- Repository audit: the repository currently contains workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration.
+- Managed online storage is acceptable for PC/phone sync if an EU data region, current privacy terms, private access controls, free-tier limits, and export/deletion options are verified. No provider is pre-approved; there must be no recurring cost for the intended personal use, and garden data must remain private.
+- The implementation role may select a free HTTPS host if garden data remains private. Any account or deployment setup the role cannot perform must be documented clearly. This does not authorize public access or a recurring-cost service.
+- Provider terms, limits, and availability may change. An EU primary data region alone must not be represented as proof that every service process remains in the EU/EEA or as proof of legal compliance; record relevant processing and privacy caveats when verifying a provider.
+- Initial Analyste audit: the repository then contained workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration. The implementation and validation recorded below have since been added.
 
 ## Blocking questions
-- **Guidance/task scope:** Does the user accept the current two broad seasonal observation reminders as a reduced first-version scope, or should the implementation include additional locally sourced planting, pruning, and harvesting tasks and advice relevant to Tournai? The user has not accepted this scope reduction.
-- **Live sync/privacy/hosting:** Does the user accept Supabase's documented international-processing caveats, which European database region should be used, and which HTTPS static host should be selected after checking its cost and terms? Provider selection was authorized, but these deployment/privacy decisions were not.
-
-The Analyste should obtain these decisions before the Développeur resumes the blocked work. Do not infer acceptance from the provider research or implementation notes.
+- None currently block handoff to Architecte. The user confirmed the full recommendation/task scope and the conditional storage/hosting constraints above; no scope reduction or specific provider was approved.
+- Before live use, the chosen storage and host must be checked against the recorded constraints. If no suitable provider can be verified, or its terms create a material privacy decision not settled by these constraints, return to the user rather than assuming acceptance.
 
 ## Acceptance criteria
 - The application offers French-language Planning and Plan views, readable on phone and usable for editing on PC and phone.
 - The user can create a simple garden map with clickable/selectable areas, approximate metric dimensions, and plant/tree records linked to an area and planting date.
 - Planning presents both a to-do list and a calendar, generates editable seasonal tasks from recorded plants, and supports personal to-dos.
-- Crop and care recommendations are provided on request, with locally relevant information for Tournai and no unsolicited recommendation interruptions.
-- Personal garden data syncs between the user's own devices using a no-recurring-cost online storage option.
+- An explicit advice request returns robust crop/care recommendations for the user's recorded crops within the agreed fruit-and-vegetable potager scope, relevant to Tournai, with reliable source, applicability, and uncertainty stated. Catalog coverage must be documented and go beyond the current two seasonal signals; missing source-backed advice for a specific plant is disclosed rather than invented. The app does not interrupt the user with unsolicited recommendations or present unsupported facts as universal.
+- Seasonal suggestions for the user's recorded plants include locally relevant planting, pruning, and harvest tasks when applicable to each plant and season. Each generated task identifies the plant and action and is traceable to a reviewed source/rule. Generic seasonal observation reminders alone do not satisfy this criterion; unsupported actions or facts are not invented.
+- Before online data is used, the selected managed storage provider's current terms and configuration verify an EU data region, private authenticated access controls, free-tier limits adequate for intended personal use without recurring charges, and usable export and deletion paths. No public access is permitted. Relevant privacy/processing caveats must be documented; an EU region alone is not a claim of EU/EEA-only processing or legal compliance.
+- A selected free HTTPS host keeps garden data private. The implementation verifies the host's relevant cost and privacy conditions; any account, configuration, or deployment steps outside the role's capability are documented as user setup. Do not claim live sync/deployment until it is configured and tested; preserve the requirement that the configured app syncs the private garden between the user's own devices.
 - No other-user sharing, photos, or notes are required for the first version.
 
 ## Architecture
@@ -120,11 +122,11 @@ UI design applies: the Designer UX/UI should define the responsive French Planni
 - Implemented provider-neutral garden records/use cases and a repository port. Without cloud configuration, the application clearly uses browser-local storage only. The optional Supabase adapter uses authenticated access and the included owner-only RLS migration; it stores one private garden JSON document per account. No service-role key or user data is in the repository.
 - **Source limitation:** the bundled catalog contains only two regional signals from Velt (strawberries, April–August; asparagus, spring). They are observation/season reminders, not planting or harvest guarantees, and are not a Tournai-specific calendar. Further locally verified facts should be added before describing this as comprehensive local guidance. Source: [Velt seasonal calendar](https://velt.nu/seizoenskalender), reviewed 24 October 2026.
 - **Provider evidence:** official Supabase Free/pricing, production checklist, backup, secure-data/RLS, authentication, region, privacy, and DPA pages are documented in `README.md` (reviewed 24 October 2026). The checked Free tier was advertised at $0/month with example quotas (500 MB database, 50,000 MAU, 5 GB egress, 1 GB file storage, two active Free projects); it can pause a project after a week inactive and does not provide downloadable daily Free backups. The app supports JSON export; the provider documents CLI database dumps and project/account deletion. Zero cost is conditional on staying on Free without paid add-ons and cannot be guaranteed against future provider changes. The privacy policy allows potential international processing; selecting an EU database region does not prove all processing stays in the EEA or establish regulatory compliance.
-- **Not yet cleared for live use:** no Supabase account/project, credentials, real-data sync, or hosted application exists. The user must decide whether Supabase’s privacy/international-transfer caveats are acceptable, select the project region, and locally configure the project URL and publishable key (never `service_role`). Cross-device access also needs a separately selected and verified HTTPS static host. The app does not provide real-time push or automatic conflict merging; the latest saved garden loads on open/reload. Do not claim end-to-end sync is validated.
+- **Not yet cleared for live use:** no Supabase account/project, credentials, real-data sync, or hosted application exists. The user has confirmed that managed storage is acceptable only if the ticket's EU-region, privacy-terms, private-access, free-tier, and export/deletion conditions are verified; this does not pre-approve Supabase or its current terms. Before relying on a provider, verify those constraints, record relevant international-processing caveats, and document any user-owned project setup (including project URL and publishable key; never `service_role`). The implementation role may choose a free HTTPS static host if garden data remains private and must document any account/deployment setup it cannot perform. The app does not provide real-time push or automatic conflict merging; the latest saved garden loads on open/reload. Do not claim end-to-end sync is validated.
 
 ### Implementation handoff boundary
 
-The local application is usable and validated, but production cloud activation is conditional on the user’s privacy/region decision, their own project configuration, and a separate hosting choice. Keep those decisions explicit; do not add sharing, photos, notes, task completion/status, or a broader plant taxonomy.
+The local application is usable and validated, but production cloud activation remains conditional on verifying the user's storage/privacy constraints, configuring the selected provider, and selecting/verifying a private free HTTPS host. The user has delegated provider and host selection within those constraints and asks that setup beyond the implementation role's capability be documented. Keep those limits explicit; do not add sharing, photos, notes, task completion/status, or a broader plant taxonomy.
 
 ## Tests
 ### Développeur validation (24 October 2026)
@@ -175,6 +177,8 @@ These remaining acceptance items require further sourced product content and use
 
 **Relecteur-réfuteur → Analyste:** obtain and record the user's decision on (a) accepting the narrowed reminder-only guidance/task scope versus requiring broader verified Tournai-relevant tasks/advice, and (b) Supabase privacy/international processing, selected region, and a cost-checked HTTPS host. Once recorded, route any accepted content or external-setup work to Développeur and request a fresh review after evidence is added. No scope limitation is treated as accepted by this review.
 
+**Analyste follow-up (24 October 2026):** The user did not accept a reduced guidance/task scope: robust Tournai-relevant crop/care recommendations remain on request, and seasonal planting/pruning/harvest tasks for recorded plants remain required. The user permits managed storage only after verifying an EU region, privacy terms, private access controls, free-tier limits, and export/deletion options; no provider or international-processing caveat is individually pre-approved. The implementation role may select a free HTTPS host if garden data stays private and must document setup it cannot perform. These decisions resolve the review's product-decision blockers without waiving either unmet acceptance criterion. No further product decision currently blocks the Architecte handoff; technical feasibility and evidence remain to be established, and any material privacy choice not answered by these constraints must return to the user.
+
 ## Handoffs and commits
 - Analyste -> Architecte: requirements clarified; repository is a workflow scaffold with no app implementation. Define architecture and source strategy for locally relevant recommendations and seasonal tasks without expanding scope. Analyste requirements commit: e5055d4.
 - Architecte -> User (blocked; no Designer UX/UI handoff yet): documented a provider-neutral first-version design and locally curated recommendation strategy. Architecture deliverable commit: 10110f28b76b7d3d3b0ac2df6ab364f3cd0b8e95.
@@ -184,3 +188,4 @@ These remaining acceptance items require further sourced product content and use
 - Développeur -> Testeur: independently validate the committed local-first app against the approved acceptance criteria, run the relevant checks, and report uncovered gaps without configuring a cloud project or claiming cross-device sync. Implementation and initial validation commit: aaa23513589ad8030659910bdd70dac9cc7caaa0.
 - Testeur -> Relecteur-réfuteur: independent local-flow tests pass; review the two remaining acceptance gaps recorded above (limited/non-Tournai-specific garden guidance and unverified live sync/hosting). Testeur validation commit: 8e83ad62cf9184924e3ebb55f4123106cb012332.
 - Relecteur-réfuteur -> Analyste: review is blocked on the two unresolved user/product decisions and corresponding acceptance gaps recorded above. Review and ticket-update commit: recorded in the final handoff.
+- Analyste -> Architecte: user decisions recorded; retain the full locally relevant, on-request crop/care guidance and recorded-plant seasonal planting/pruning/harvest scope. Storage must meet the EU-region, privacy-terms, private-access, free-tier, and export/deletion constraints; the implementation role may select a private free HTTPS host and must document setup it cannot perform. No product blocker remains for architecture, but neither review gap is waived: reconcile the design and hand off implementation work only within the confirmed scope. Analyste ticket-update commit: to be recorded by the next role.
