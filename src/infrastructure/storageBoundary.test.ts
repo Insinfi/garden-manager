@@ -19,7 +19,15 @@ describe("private storage and static hosting boundaries", () => {
       );
       expect(policyBlock, `a ${operation} policy must exist`).not.toBeNull();
       expect(policyBlock?.[1]).toMatch(/to authenticated/i);
-      expect(policyBlock?.[1]).toMatch(/auth\.uid\(\)\)*\s*=\s*owner_id/i);
+      const ownerCheck = /\(\s*select\s+auth\.uid\(\)\s*\)\s*=\s*owner_id/i;
+      if (operation === "select" || operation === "delete") {
+        expect(policyBlock?.[1]).toMatch(new RegExp(`using\\s*\\(${ownerCheck.source}\\)`, "i"));
+      } else {
+        expect(policyBlock?.[1]).toMatch(new RegExp(`with\\s+check\\s*\\(${ownerCheck.source}\\)`, "i"));
+      }
+      if (operation === "update") {
+        expect(policyBlock?.[1]).toMatch(new RegExp(`using\\s*\\(${ownerCheck.source}\\)`, "i"));
+      }
     }
     expect(migration).not.toMatch(/to anon/i);
   });
