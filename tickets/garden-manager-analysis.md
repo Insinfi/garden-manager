@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Testeur
-- State: Développeur follow-up committed; local implementation and evidence are ready for independent Testeur validation, then a fresh Relecteur-réfuteur review. The ticket is not complete: live sync and production acceptance remain unverified, and the source coverage gaps below remain explicit.
+- Current role: Relecteur-réfuteur
+- State: Independent Testeur validation and follow-up review are recorded. The ticket remains incomplete: both prior P1 acceptance blockers are unmet and unwaived; live sync/production acceptance is unverified, and source coverage gaps remain explicit.
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -205,6 +205,12 @@ These remaining acceptance items require further sourced product content and use
 - **Disposition:** the two prior P1 acceptance blockers are not waived or passed: (1) broad, robust Tournai-relevant recommendations/tasks remain source-limited, and (2) authenticated hosted sync/hosting remains unconfigured and unverified pending user privacy/terms acceptance and real project setup. Keep the ticket open and route to Relecteur-réfuteur for a fresh review of the follow-up evidence and these unmet gates; do not mark complete.
 
 ## Review
+### Relecteur-réfuteur — Testeur follow-up (24 October 2026)
+
+- Approved the Testeur's refined storage-boundary test: it independently checks owner-scoped `USING` and `WITH CHECK` clauses on the UPDATE policy. Re-ran `npm test -- src/infrastructure/storageBoundary.test.ts`: passed, 1 file and 2 tests.
+- Confirmed the Testeur's source caveats, no-live-project/no-two-device-sync statements, and both prior P1 blockers remain correctly reported. This approval is limited to the test/ticket follow-up; it does not pass either unmet acceptance criterion.
+- No files were changed and no review commit was created by Relecteur-réfuteur.
+
 ### Relecteur-réfuteur — 24 October 2026
 
 **Outcome: BLOCKED — do not mark the ticket complete.** The local implementation is coherent with the approved lightweight architecture and the checked local workflows pass, but two blocking acceptance criteria remain unmet and no user-approved scope reduction is recorded.
@@ -243,3 +249,4 @@ These remaining acceptance items require further sourced product content and use
 - Testeur -> Relecteur-réfuteur: independently checked implementation `7ee2d1e`, current README/ticket gates and source evidence; added private-storage/hosting boundary regression tests. `npm test` (6 files, 20 tests), `npm run typecheck`, `npm run build`, `npm audit` (0 vulnerabilities), and `git diff --check` passed. No production code changed and no cloud project/deployment/two-device test was configured. Review the updated evidence while retaining both unwaived blockers: incomplete Tournai-specific/source coverage and unverified live sync/hosting. The ticket remains incomplete.
 - Relecteur-réfuteur review of Testeur commit `eb74e31`: confirmed the evidence and both unmet blockers remain correctly reported; suggested tightening the UPDATE policy assertion to check both `USING` and `WITH CHECK`. Testeur addressed that test-only refinement in follow-up commit to be recorded below; no production change.
 - Testeur -> Relecteur-réfuteur follow-up: commit `b6a2110` tightens the UPDATE policy regression assertion to require owner checks in both `USING` and `WITH CHECK`; focused and full tests, typecheck, build, and `git diff --check` passed. Please review this test-only refinement in addition to the previously handed-off evidence; both acceptance blockers remain open.
+- Relecteur-réfuteur -> Testeur: confirmed commit `b6a2110` independently asserts both UPDATE owner guards; focused test passed (1 file, 2 tests). Approved the test-only refinement and confirmed both prior P1 blockers remain open. No files/commit from reviewer. The ticket status was updated to reflect completed Testeur validation/review without implying acceptance.
