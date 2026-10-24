@@ -15,6 +15,7 @@ This repository supports the broader Garden Manager vision described in AGENTS.m
 - Do not begin implementation or architecture work while blocking requirements remain unanswered.
 - Confirm the specific analysis scope before moving into design or code.
 - Preserve the product direction without inventing assumptions.
+- Repo audit finding: the repository currently contains workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration yet.
 
 ## Blocking questions
 - What should this analysis focus on: the overall repository, a particular feature, a user flow, or a bug/issue?
@@ -42,4 +43,4 @@ No tests yet; no functional work started.
 Pending user clarification on scope.
 
 ## Handoffs and commits
-- Analyste -> Architecte: awaiting scope clarification and answer to blocking questions.
+- Analyste -> Architecte: commit f1722ec; repo audit indicates the directory is a workflow scaffold with no app implementation yet, so the next role should define architecture only after a concrete product scope is chosen.
