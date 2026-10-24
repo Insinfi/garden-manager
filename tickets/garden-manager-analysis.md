@@ -97,4 +97,4 @@ Pending Relecteur-réfuteur.
 
 ## Handoffs and commits
 - Analyste -> Architecte: requirements clarified; repository is a workflow scaffold with no app implementation. Define architecture and source strategy for locally relevant recommendations and seasonal tasks without expanding scope. Analyste requirements commit: e5055d4.
-- Architecte -> User (blocked; no Designer UX/UI handoff yet): documented a provider-neutral first-version design and locally curated recommendation strategy. Await a decision on the hosted storage provider/selection authority before advancing. Architecture deliverable commit hash will be recorded in the follow-up handoff bookkeeping commit.
+- Architecte -> User (blocked; no Designer UX/UI handoff yet): documented a provider-neutral first-version design and locally curated recommendation strategy. Await a decision on the hosted storage provider/selection authority before advancing. Architecture deliverable commit: 10110f28b76b7d3d3b0ac2df6ab364f3cd0b8e95.
