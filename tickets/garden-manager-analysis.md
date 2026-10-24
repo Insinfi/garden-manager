@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Relecteur-réfuteur
-- State: Testeur validation complete; review pending.
+- Current role: Analyste (to resolve review blockers with the user)
+- State: Relecteur-réfuteur review complete; blocking follow-up required.
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -27,7 +27,10 @@ This initial product scope supports planning a garden, managing plants and trees
 - Repository audit: the repository currently contains workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration.
 
 ## Blocking questions
-None currently. The user authorized the implementation role to select and verify a compliant provider.
+- **Guidance/task scope:** Does the user accept the current two broad seasonal observation reminders as a reduced first-version scope, or should the implementation include additional locally sourced planting, pruning, and harvesting tasks and advice relevant to Tournai? The user has not accepted this scope reduction.
+- **Live sync/privacy/hosting:** Does the user accept Supabase's documented international-processing caveats, which European database region should be used, and which HTTPS static host should be selected after checking its cost and terms? Provider selection was authorized, but these deployment/privacy decisions were not.
+
+The Analyste should obtain these decisions before the Développeur resumes the blocked work. Do not infer acceptance from the provider research or implementation notes.
 
 ## Acceptance criteria
 - The application offers French-language Planning and Plan views, readable on phone and usable for editing on PC and phone.
@@ -152,7 +155,25 @@ The local application is usable and validated, but production cloud activation i
 These remaining acceptance items require further sourced product content and user-approved external setup; they were not changed by the Testeur validation.
 
 ## Review
-Pending Relecteur-réfuteur.
+### Relecteur-réfuteur — 24 October 2026
+
+**Outcome: BLOCKED — do not mark the ticket complete.** The local implementation is coherent with the approved lightweight architecture and the checked local workflows pass, but two blocking acceptance criteria remain unmet and no user-approved scope reduction is recorded.
+
+#### Blocking findings
+
+1. **P1 — Seasonal guidance/tasks do not satisfy the agreed coverage or locality.** `src/application/seasonalTasks.ts` contains only two rules (strawberries and asparagus) and creates “Observer…” reminders; `src/domain/guidance.ts` likewise has only those two entries. Neither provides the requested planting, pruning, or harvesting tasks for the user's recorded plants, and the catalog is not specific to Tournai. I independently checked the cited Velt calendar: it describes seasonal produce harvested in its region (including strawberries April–August and asparagus in spring), not cultivation instructions for an individual garden. The implementation is commendably cautious about source scope and uncertainty, but that caution does not fulfill the broader accepted requirement. **Return to Analyste** to ask whether the user accepts the explicitly limited reminder-only scope; if not, **Développeur** must add further reviewed, locally applicable sourced content and corresponding tests before this criterion can pass. Do not invent unsupported horticultural facts.
+
+2. **P1 — Cross-device sync is not deployed or verified.** The default in `src/infrastructure/repository.ts` is browser `localStorage`; the Supabase adapter is conditional on local environment configuration, and no account/project, migration execution, HTTPS host, or end-to-end authenticated sync test exists. The README accurately says local data does not sync and that live operation still needs the user's privacy/region decision and a separate host. Thus the “personal garden data syncs between the user's own devices” acceptance criterion is **not met**; documented setup instructions and an optional adapter are not evidence of working sync. **Return to Analyste/user** for explicit acceptance of the documented privacy/international-transfer caveat and selection of a region and host; then **Développeur** must configure and verify authenticated access, owner-only RLS, save/reload across two devices, and the chosen host/cost. No accepted limitation or user decision is recorded, so this cannot be waived in review.
+
+#### Passing evidence and non-blocking observations
+
+- The Plan/Planning flows, approximate metric rectangles, plant-to-area/date relationship, keyboard placement/repositioning, task editing and stable suggestion merge are consistent with the approved architecture and UX decisions on source inspection.
+- I independently ran `npm test` (5 files, 15 tests), `npm run typecheck`, `npm run build`, `npm audit` (0 vulnerabilities), and `git diff --check`; all passed. The working tree was clean before this review. This validates the local build and tested flows only, not cloud integration or browser/device accessibility.
+- The UI source includes French labels, keyboard placement alternatives, visible focus styles, reduced-motion handling, responsive breakpoints, textual save/error feedback, and non-color-only selection/task labels. A rendered mobile viewport, screen-reader, contrast, and automated accessibility audit remain unavailable; perform these before production, but they do not change the two blockers above.
+
+#### Disposition / handoff
+
+**Relecteur-réfuteur → Analyste:** obtain and record the user's decision on (a) accepting the narrowed reminder-only guidance/task scope versus requiring broader verified Tournai-relevant tasks/advice, and (b) Supabase privacy/international processing, selected region, and a cost-checked HTTPS host. Once recorded, route any accepted content or external-setup work to Développeur and request a fresh review after evidence is added. No scope limitation is treated as accepted by this review.
 
 ## Handoffs and commits
 - Analyste -> Architecte: requirements clarified; repository is a workflow scaffold with no app implementation. Define architecture and source strategy for locally relevant recommendations and seasonal tasks without expanding scope. Analyste requirements commit: e5055d4.
@@ -161,4 +182,5 @@ Pending Relecteur-réfuteur.
 - Coordinator -> Designer UX/UI: unblock UX/UI; keep the interface provider-neutral. UX/UI deliverable should specify accessible responsive planning/map behavior within the approved scope.
 - Designer UX/UI -> Développeur: implement the provider-neutral French Planning and Plan interactions, responsive behavior, states, and accessibility expectations documented above; preserve the approved scope and verify storage-provider criteria before relying on a provider. UX/UI deliverable commit: 259ae017533ac4c214ef89ee6f7b068a13a52113.
 - Développeur -> Testeur: independently validate the committed local-first app against the approved acceptance criteria, run the relevant checks, and report uncovered gaps without configuring a cloud project or claiming cross-device sync. Implementation and initial validation commit: aaa23513589ad8030659910bdd70dac9cc7caaa0.
-- Testeur -> Relecteur-réfuteur: independent local-flow tests pass; review the two remaining acceptance gaps recorded above (limited/non-Tournai-specific garden guidance and unverified live sync/hosting). Testeur validation commit: to be recorded in the Relecteur-réfuteur handoff.
+- Testeur -> Relecteur-réfuteur: independent local-flow tests pass; review the two remaining acceptance gaps recorded above (limited/non-Tournai-specific garden guidance and unverified live sync/hosting). Testeur validation commit: 8e83ad62cf9184924e3ebb55f4123106cb012332.
+- Relecteur-réfuteur -> Analyste: review is blocked on the two unresolved user/product decisions and corresponding acceptance gaps recorded above. Review and ticket-update commit: recorded in the final handoff.
