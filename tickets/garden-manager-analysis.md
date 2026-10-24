@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Architecte
-- State: Blocked — awaiting user decision on the online storage provider
+- Current role: Designer UX/UI
+- State: Ready for UX/UI
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -23,10 +23,11 @@ This initial product scope supports planning a garden, managing plants and trees
 - Changes made on the PC should sync to the user's phone over the internet.
 - The first version is for the user's personal garden and own devices; multi-person sharing is out of scope.
 - A free online storage option is required for personal use, with reasonable free-tier limits acceptable but no recurring cost.
+- The user authorizes the implementation role to select a provider only after verifying privacy, free-tier limits, export/deletion, and zero-recurring-cost fit. This does not authorize public access or a recurring-cost provider.
 - Repository audit: the repository currently contains workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration.
 
 ## Blocking questions
-- Storage provider/selection authority: should the user name the provider, or authorize the implementation role to select and verify a compliant option? See the architecture decision below. UX/UI handoff is paused until resolved.
+None currently. The user authorized the implementation role to select and verify a compliant provider.
 
 ## Acceptance criteria
 - The application offers French-language Planning and Plan views, readable on phone and usable for editing on PC and phone.
@@ -57,7 +58,7 @@ The repository has no application code or runtime conventions to preserve. For t
 
 ### Storage and recommendation sourcing
 
-- **Storage strategy:** private, single-owner hosted data with sign-in/authorization on every read and write; no public or unguessable-link access. A provider adapter/repository keeps data portable and limits vendor coupling. Choose a managed option only after confirming its current free-tier limits, retention/backup and export/deletion path, service availability/sleep behavior, authentication, and whether expected personal use can remain at zero recurring cost. Do not promise unlimited or permanent free storage. No provider is selected in the approved ticket; selection affects privacy, auth, availability, migration, and ongoing-cost risk and is a material decision. The ticket is blocked pending the user's preference or explicit permission for the implementation role to select a compliant option after verification.
+- **Storage strategy:** private, single-owner hosted data with sign-in/authorization on every read and write; no public or unguessable-link access. A provider adapter/repository keeps data portable and limits vendor coupling. The user authorizes the implementation role to select a managed option only after confirming its current free-tier limits, retention/backup and export/deletion path, service availability/sleep behavior, authentication, and whether expected personal use can remain at zero recurring cost. Do not promise unlimited or permanent free storage. Provider selection still requires evidence and must be recorded before implementation relies on it.
 - **Guidance strategy:** curate and version the small set of facts/rules needed for the first version from reliable Belgian or locally applicable horticultural sources. Store source name/URL, review date/version, regional/seasonal applicability, and any caveat alongside each rule. Keep the rule engine deterministic and independent of the presentation and persistence vendor. Avoid scraping or depending on a live external recommendation API in v1: that would add availability, licensing, freshness, and factual-quality failure modes without being required by the ticket. Do not ship unsupported universal advice; review/refresh catalog entries deliberately and omit facts that cannot be sourced confidently.
 
 ### Interfaces and failure/migration concerns
@@ -73,15 +74,7 @@ Keep application-facing interfaces small and semantic: garden/area/plant reposit
 
 This is a lightweight Clean Architecture boundary (presentation → application/domain → ports, with provider/catalog adapters), not a mandate for multiple deployables or layers per entity. It isolates the only substantial external dependency while keeping a small first-version app easy to implement. SOLID is applied chiefly through dependency inversion at persistence and guidance boundaries; additional abstractions would add ceremony without a second implementation. Atomic Design is appropriate within the UI for shared controls and composed views, but does not define backend or domain boundaries.
 
-UI design applies: the Designer UX/UI should define the responsive French Planning/Plan flows, accessible PC and phone editing, map area creation/selection and metric sizing, task/calendar interactions, and the explicit request path for advice. Keep it to requirements already approved; do not add sharing, photos, notes, or proactive recommendations. Coordinate with the developer on minimal area geometry and task-edit/status behavior. **Do not advance to UX/UI until the storage-provider blocker below is resolved.**
-
-### Blocking decision for user
-
-The ticket requires private personal cross-device sync at no recurring cost, but does not name a hosted provider or authorize the team to choose one. Which should we do?
-1. Use a provider you name (please specify it); or
-2. Authorize the implementation role to select and verify a provider that meets the ticket's privacy, free-tier, export/deletion, and zero-recurring-cost constraints.
-
-Until answered, no provider-specific architecture or next-role handoff is approved.
+UI design applies: the Designer UX/UI should define the responsive French Planning/Plan flows, accessible PC and phone editing, map area creation/selection and metric sizing, task/calendar interactions, and the explicit request path for advice. Keep it to requirements already approved; do not add sharing, photos, notes, or proactive recommendations. Coordinate with the developer on minimal area geometry and task-edit/status behavior. Provider selection is delegated to the implementation role subject to the verification criteria above; no provider-specific interface is required at UX stage.
 
 ## UX/UI
 Pending Designer UX/UI.
@@ -97,4 +90,6 @@ Pending Relecteur-réfuteur.
 
 ## Handoffs and commits
 - Analyste -> Architecte: requirements clarified; repository is a workflow scaffold with no app implementation. Define architecture and source strategy for locally relevant recommendations and seasonal tasks without expanding scope. Analyste requirements commit: e5055d4.
-- Architecte -> User (blocked; no Designer UX/UI handoff yet): documented a provider-neutral first-version design and locally curated recommendation strategy. Await a decision on the hosted storage provider/selection authority before advancing. Architecture deliverable commit: 10110f28b76b7d3d3b0ac2df6ab364f3cd0b8e95.
+- Architecte -> User (blocked; no Designer UX/UI handoff yet): documented a provider-neutral first-version design and locally curated recommendation strategy. Architecture deliverable commit: 10110f28b76b7d3d3b0ac2df6ab364f3cd0b8e95.
+- User decision: authorized the implementation role to choose and verify a provider against privacy, free-tier limits, export/deletion, and zero-recurring-cost requirements.
+- Coordinator -> Designer UX/UI: unblock UX/UI; keep the interface provider-neutral. UX/UI deliverable should specify accessible responsive planning/map behavior within the approved scope.
