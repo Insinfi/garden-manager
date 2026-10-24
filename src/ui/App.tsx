@@ -866,7 +866,7 @@ function App() {
         <Modal title={editingTask ? "Modifier la tâche" : "Ajouter une tâche personnelle"} onClose={() => { setTaskModal(false); setEditingTask(null); pendingTaskId.current = null; }}>
           {editingTask?.kind === "suggested" && <div className="source-callout">
             <p>Suggestion saisonnière : vos changements de titre et de date seront conservés lors de l’actualisation.</p>
-            {editingTask.source && <p><strong>Source :</strong> <a href={editingTask.source.url} target="_blank" rel="noreferrer">{editingTask.source.name}</a> · revue {editingTask.source.reviewedOn} · catalogue {editingTask.source.version}. {editingTask.source.applicability} {editingTask.source.caveat}</p>}
+            {editingTask.source && <p><strong>Source :</strong> <a href={editingTask.source.url} target="_blank" rel="noreferrer">{editingTask.source.name}</a> · revue {editingTask.source.reviewedOn} · catalogue {editingTask.source.version}. {editingTask.source.evidence} {editingTask.source.applicability} {editingTask.source.caveat}</p>}
           </div>}
           <form className="stack-form" onSubmit={submitTask}>
             <label htmlFor="task-title">Nom de la tâche</label><input id="task-title" name="title" required defaultValue={editingTask?.title ?? ""} autoFocus />
@@ -884,6 +884,7 @@ function App() {
                 <article className="advice-card" key={advice.id}>
                   <h3>{advice.title}</h3><p>{advice.message}</p>
                   <p><strong>Contexte :</strong> {advice.applicability}</p>
+                  <p><strong>Éléments de la source :</strong> {advice.evidence}</p>
                   <p className="caveat"><strong>À garder en tête :</strong> {advice.caveat}</p>
                   <a href={advice.sourceUrl} target="_blank" rel="noreferrer">Source : {advice.sourceName} <span aria-hidden="true">↗</span></a>
                   <p className="source-version">Revu le {advice.reviewedOn} · catalogue {advice.version}</p>

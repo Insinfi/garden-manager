@@ -50,8 +50,8 @@ describe("potager planner flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Planning" }));
     fireEvent.click(screen.getByRole("button", { name: "Conseils : Fraisier" }));
     expect(await screen.findByRole("dialog", { name: "Conseils pour Fraisier" })).toBeInTheDocument();
-    expect(screen.getByText(/Velt indique une période d’avril à août/)).toBeInTheDocument();
-    expect(screen.getByText(/La variété, la météo, le microclimat/)).toBeInTheDocument();
+    expect(screen.getByText(/Velt indique avril à août/)).toBeInTheDocument();
+    expect(screen.getByText(/Une période de saisonnalité alimentaire/)).toBeInTheDocument();
     fireEvent.click(screen.getAllByRole("button", { name: "Fermer" })[1]);
     fireEvent.click(screen.getByRole("button", { name: "Toutes les tâches" }));
     await waitFor(() => expect(screen.getAllByRole("button", { name: /Modifier la tâche suggérée/ })).toHaveLength(5));

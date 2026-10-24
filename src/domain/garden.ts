@@ -29,6 +29,7 @@ export type GardenTask = {
     version: string;
     applicability: string;
     caveat: string;
+    evidence?: string;
   };
 };
 

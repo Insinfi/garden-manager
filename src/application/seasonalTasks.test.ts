@@ -2,22 +2,55 @@ import { describe, expect, it } from "vitest";
 import type { GardenPlant, GardenTask } from "../domain/garden";
 import { mergeSeasonalSuggestions, seasonalSuggestions } from "./seasonalTasks";
 
-const plant = (name: string): GardenPlant => ({
-  id: "plant-1",
+const plant = (name: string, id = "plant-1"): GardenPlant => ({
+  id,
   name,
   kind: "plant",
   areaId: "area-1",
   plantedOn: "2026-03-01",
 });
 
-describe("seasonal suggestion generation", () => {
-  it("suggests localized observation tasks only for catalogued crops in the next year", () => {
-    const suggestions = seasonalSuggestions([plant("Fraisier"), plant("Asperge")], new Date(2026, 2, 1));
-    expect(suggestions.length).toBeGreaterThan(0);
-    expect(suggestions.every((task) => task.kind === "suggested" && task.plantId === "plant-1")).toBe(true);
-    expect(suggestions.some((task) => task.ruleId === "velt-strawberry-season" && task.date.startsWith("2026-04"))).toBe(true);
-    expect(suggestions.some((task) => task.ruleId === "velt-asparagus-spring" && task.date.startsWith("2026-03"))).toBe(true);
-    expect(seasonalSuggestions([plant("Courgette")], new Date(2026, 2, 1))).toEqual([]);
+describe("source-backed seasonal task generation", () => {
+  it("creates distinct sowing, harvest-check, and cultivar-specific pruning reminders", () => {
+    const suggestions = seasonalSuggestions([
+      plant("Tomate"),
+      plant("Carotte", "plant-2"),
+      plant("Framboisier d’été", "plant-3"),
+      plant("Framboisier d’automne", "plant-4"),
+      plant("Asperge", "plant-5"),
+      plant("Courgette", "plant-6"),
+    ], new Date(2026, 1, 1));
+
+    expect(suggestions.some((task) =>
+      task.plantId === "plant-1" &&
+      task.ruleId === "tomato-sow" &&
+      task.date === "2026-02-01" &&
+      task.title.includes("semis"),
+    )).toBe(true);
+    expect(suggestions.some((task) =>
+      task.plantId === "plant-1" && task.ruleId === "tomato-harvest",
+    )).toBe(true);
+    expect(suggestions.some((task) => task.ruleId === "compo-summer-raspberry-prune" && task.date.includes("-07-"))).toBe(true);
+    expect(suggestions.some((task) => task.ruleId === "compo-autumn-raspberry-prune" && task.date.includes("-11-"))).toBe(true);
+    expect(suggestions.some((task) => task.plantId === "plant-5")).toBe(false);
+    expect(suggestions.some((task) => task.plantId === "plant-6")).toBe(false);
+    expect(suggestions.every((task) =>
+      task.kind === "suggested" &&
+      task.plantId &&
+      task.source?.url.startsWith("https://") &&
+      task.source?.evidence &&
+      task.source?.reviewedOn === "2026-10-24" &&
+      task.source?.version === "potager-be-v2",
+    )).toBe(true);
+  });
+
+  it("uses exact crop-name matching and schedules a current-month reminder from today", () => {
+    const suggestions = seasonalSuggestions(
+      [plant("Radis"), plant("Radis noir", "unknown")],
+      new Date(2026, 4, 15),
+    );
+    expect(suggestions.some((task) => task.date === "2026-05-15")).toBe(true);
+    expect(suggestions.some((task) => task.plantId === "unknown")).toBe(false);
   });
 
   it("uses stable identities and preserves edited suggestions during refresh", () => {
@@ -30,7 +63,7 @@ describe("seasonal suggestion generation", () => {
     expect(mergeSeasonalSuggestions(refreshed, [plant("Fraisier")], new Date(2026, 2, 1))).toEqual(refreshed);
   });
 
-  it("does not create duplicate suggestions for personal tasks", () => {
+  it("keeps personal tasks and does not generate duplicates for them", () => {
     const personal: GardenTask = {
       id: "personal-1",
       title: "Acheter des graines",
