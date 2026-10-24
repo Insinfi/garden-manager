@@ -43,4 +43,4 @@ No tests yet; no functional work started.
 Pending user clarification on scope.
 
 ## Handoffs and commits
-- Analyste -> Architecte: commit f1722ec; repo audit indicates the directory is a workflow scaffold with no app implementation yet, so the next role should define architecture only after a concrete product scope is chosen.
+- Analyste -> Architecte: commit 9a86c05; repo audit indicates the directory is a workflow scaffold with no app implementation yet, so the next role should define architecture only after a concrete product scope is chosen.
