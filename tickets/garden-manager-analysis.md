@@ -52,4 +52,4 @@ Pending Testeur.
 Pending Relecteur-réfuteur.
 
 ## Handoffs and commits
-- Analyste -> Architecte: requirements clarified; repository is a workflow scaffold with no app implementation. Define architecture and source strategy for locally relevant recommendations and seasonal tasks without expanding scope. Analysis commit recorded in the subsequent handoff update.
+- Analyste -> Architecte: requirements clarified; repository is a workflow scaffold with no app implementation. Define architecture and source strategy for locally relevant recommendations and seasonal tasks without expanding scope. Analyste requirements commit: e5055d4.
