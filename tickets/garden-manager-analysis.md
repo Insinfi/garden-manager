@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Designer UX/UI
-- State: Ready for UX/UI
+- Current role: Développeur
+- State: Ready for implementation
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -77,7 +77,36 @@ This is a lightweight Clean Architecture boundary (presentation → application/
 UI design applies: the Designer UX/UI should define the responsive French Planning/Plan flows, accessible PC and phone editing, map area creation/selection and metric sizing, task/calendar interactions, and the explicit request path for advice. Keep it to requirements already approved; do not add sharing, photos, notes, or proactive recommendations. Coordinate with the developer on minimal area geometry and task-edit/status behavior. Provider selection is delegated to the implementation role subject to the verification criteria above; no provider-specific interface is required at UX stage.
 
 ## UX/UI
-Pending Designer UX/UI.
+### Navigation and responsive behavior
+
+- Present two clearly named French-language destinations, **Planning** and **Plan**, with the current destination evident to sighted users and assistive technology. Use familiar, restrained controls and semantic headings/forms; the repository has no application UI or component system to extend.
+- Keep both views readable on phone and PC. On PC, use the available width for the map and its selected-area details, and show the Planning calendar and chronological task list together where practical. On a phone, keep controls and text comfortably readable and avoid requiring horizontal scrolling; allow the calendar and list to be switched between or stacked, with the selected date and its tasks easy to find. All key editing remains possible on touch and with mouse/keyboard.
+- Show a concise, non-color-only save/sync state. Do not claim success until the save is confirmed; on failure keep entered values visible and offer a clear retry.
+
+### Plan flow
+
+1. The Plan opens as a simple schematic of the garden, with existing areas visibly bounded and selectable. Areas use simple rectangles in v1; dimensions are approximate width and length in metres, not CAD precision. Provide a labelled **Ajouter une zone** action and a short form for the dimensions, then let the user place it on the plan by click/tap. Do not require drawing or dragging.
+2. Selecting a zone highlights it with more than color alone and exposes its dimensions and plants/trees. The same areas must also be available as labelled, keyboard-operable controls outside the spatial surface, so selection does not depend on pointer precision.
+3. Offer a keyboard placement alternative when adding/repositioning a zone: focus the plan, use arrow keys to move a visible placement marker, and confirm with Enter/Space; announce the current action/placement accessibly. Dimensions remain editable in labelled numeric fields. On touch, tap to place and use the fields—not pinch, drag, or precision gestures—to set size.
+4. From a selected area, **Ajouter une plante ou un arbre** opens a labelled form with name/type, planting date, and area preselected (or explicitly selectable). Validate required fields inline, preserve values after validation/save errors, and on confirmed save show the new record in its area and a brief textual success state. No photo, notes, sharing, or generalized taxonomy controls.
+
+### Planning flow
+
+- Planning provides both a month-based calendar and a chronological task list. Selecting a day filters or focuses the list on that date; the list remains available independently of the calendar. Use text labels and accessible controls to move between months and dates; do not rely on color or calendar-cell position alone.
+- Identify generated seasonal tasks as **Suggérée** and personal tasks as **Personnelle**. A task can be opened and edited, including its text and date; generated-task edits are retained on refresh as specified by the architecture. Provide **Ajouter une tâche personnelle** independently of plant suggestions. Do not imply unsupported completion/status behavior.
+- If there are no tasks, explain the empty state and offer the in-scope actions to add a personal task or record plants/trees for seasonal suggestions. If there are no plants, do not manufacture suggestions. When loading tasks, show a non-blocking loading indicator; on load/save failure explain the problem, retain edits, and provide retry. Confirm successful task saves in text.
+- Recommendations appear only after an explicit **Voir des conseils** / **Demander des conseils** action. Present relevant guidance with its source and applicable context/caveat, and distinguish it from user-entered information. Do not interrupt with unsolicited advice or recommendation prompts.
+
+### Accessibility and visual behavior
+
+- Use French labels, semantic landmarks/headings, correctly associated form labels and error descriptions, logical keyboard order, visible high-contrast focus, and accessible names/states for the selected view, area, date, and task type. Keep text and controls legible at narrow widths and browser zoom; never convey selection, task type, validation, or save state by color alone.
+- Support keyboard and screen-reader operation for navigation, forms, calendar, area selection, and map placement; provide the non-gesture alternatives above. Respect reduced-motion preferences and do not make essential state changes depend on animation. Use clear, inline validation and announced save/error feedback without unexpectedly moving focus.
+- Keep the map schematic and uncluttered; pair its spatial display with labelled controls/details so its information and actions remain available without visual interpretation of the map.
+
+### Handoff notes
+
+- Keep geometry to rectangular approximate metric areas; use the interaction above rather than a freehand/CAD editor. Keep task completion/status out of the first version unless the analyst confirms it as scope.
+- No product decision remains blocking for UX/UI. The implementation role owns provider selection and must verify the ticket's privacy, free-tier, export/deletion, and zero-recurring-cost criteria; the interface remains provider-neutral.
 
 ## Implementation
 Pending Développeur.
@@ -93,3 +122,4 @@ Pending Relecteur-réfuteur.
 - Architecte -> User (blocked; no Designer UX/UI handoff yet): documented a provider-neutral first-version design and locally curated recommendation strategy. Architecture deliverable commit: 10110f28b76b7d3d3b0ac2df6ab364f3cd0b8e95.
 - User decision: authorized the implementation role to choose and verify a provider against privacy, free-tier limits, export/deletion, and zero-recurring-cost requirements.
 - Coordinator -> Designer UX/UI: unblock UX/UI; keep the interface provider-neutral. UX/UI deliverable should specify accessible responsive planning/map behavior within the approved scope.
+- Designer UX/UI -> Développeur: implement the provider-neutral French Planning and Plan interactions, responsive behavior, states, and accessibility expectations documented above; preserve the approved scope and verify storage-provider criteria before relying on a provider. UX/UI deliverable commit hash will be recorded in the follow-up handoff bookkeeping commit.
