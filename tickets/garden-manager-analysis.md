@@ -1,46 +1,55 @@
-# Ticket: Garden Manager analysis
+# Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Analyste
-- State: Needs analysis
+- Current role: Architecte
+- State: Ready for architecture
 
 ## Request and context
-The user asked to begin the analysis for the Garden Manager repository. The goal is to clarify scope, product expectations, and the next steps before any implementation work begins.
+Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
 
 ## Product context
-This repository supports the broader Garden Manager vision described in AGENTS.md: planning and managing a garden, drawing a garden plan, managing trees and plants, attaching notes and photos, and sharing plans. The product should remain open to additional capabilities while preserving a free storage path for saveable plans.
+This initial product scope supports planning a garden, managing plants and trees, and providing beginner-friendly, locally relevant guidance. The user wants a personal garden synced across their own devices, with no recurring cost for personal use. Broader sharing, photos, and notes are not included in the agreed first-version scope.
 
 ## Requirements and constraints
-- Follow the ticket workflow documented in AGENTS.md.
-- Do not begin implementation or architecture work while blocking requirements remain unanswered.
-- Confirm the specific analysis scope before moving into design or code.
-- Preserve the product direction without inventing assumptions.
-- Repo audit finding: the repository currently contains workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration yet.
+- The interface should be in French initially.
+- It should be responsive and readable on a phone. Editing should work on PC and remain possible on a phone; phone editing is not prohibited.
+- Provide two core views: Planning and Plan.
+- Planning should provide both a chronological to-do list and a calendar.
+- Automatically suggest seasonal tasks based on the user's recorded plants, including actions such as planting, pruning, and harvesting. The user can edit suggested tasks and add personal tasks that are not tied to an automatically suggested plant task.
+- Show crop and care recommendations only when the user asks; do not proactively interrupt the user with recommendations.
+- Recommendations and seasonal task timing should be relevant to Tournai, Belgium. Gardening facts are context-dependent and should come from reliable, locally relevant sources; distinguish advice from user-entered observations and avoid presenting uncertain guidance as universal fact.
+- The Plan view should let the user create simple garden areas and click/select them. Approximate real dimensions are required, using metric units; precise CAD-level accuracy is not required.
+- The user should be able to create plant and tree records containing at least a name/type, location on the plan, and planting date.
+- Changes made on the PC should sync to the user's phone over the internet.
+- The first version is for the user's personal garden and own devices; multi-person sharing is out of scope.
+- A free online storage option is required for personal use, with reasonable free-tier limits acceptable but no recurring cost.
+- Repository audit: the repository currently contains workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration.
 
 ## Blocking questions
-- What should this analysis focus on: the overall repository, a particular feature, a user flow, or a bug/issue?
-- If a feature or bug is involved, what is the expected behavior or problem statement?
-- Are there any constraints such as a preferred stack, target user flow, or acceptance criteria already defined?
+None currently. The user has clarified the product scope and key behavioral decisions.
 
 ## Acceptance criteria
-- A clear, agreed scope for the analysis is defined.
-- Any missing requirements are captured as explicit questions instead of assumptions.
-- The next role can proceed only after blocking questions are answered.
+- The application offers French-language Planning and Plan views, readable on phone and usable for editing on PC and phone.
+- The user can create a simple garden map with clickable/selectable areas, approximate metric dimensions, and plant/tree records linked to an area and planting date.
+- Planning presents both a to-do list and a calendar, generates editable seasonal tasks from recorded plants, and supports personal to-dos.
+- Crop and care recommendations are provided on request, with locally relevant information for Tournai and no unsolicited recommendation interruptions.
+- Personal garden data syncs between the user's own devices using a no-recurring-cost online storage option.
+- No other-user sharing, photos, or notes are required for the first version.
 
 ## Architecture
-N/A until scope is clarified.
+Pending Architecte.
 
 ## UX/UI
-N/A until a user-facing feature or flow is identified.
+Pending Designer UX/UI.
 
 ## Implementation
-No implementation yet; analysis in progress.
+Pending Développeur.
 
 ## Tests
-No tests yet; no functional work started.
+Pending Testeur.
 
 ## Review
-Pending user clarification on scope.
+Pending Relecteur-réfuteur.
 
 ## Handoffs and commits
-- Analyste -> Architecte: commit 9a86c05; repo audit indicates the directory is a workflow scaffold with no app implementation yet, so the next role should define architecture only after a concrete product scope is chosen.
+- Analyste -> Architecte: requirements clarified; repository is a workflow scaffold with no app implementation. Define architecture and source strategy for locally relevant recommendations and seasonal tasks without expanding scope. Analysis commit recorded in the subsequent handoff update.
