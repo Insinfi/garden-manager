@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Développeur
-- State: Implementation complete; commit and Testeur handoff pending.
+- Current role: Testeur
+- State: Implementation committed; independent validation pending.
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -145,3 +145,4 @@ Pending Relecteur-réfuteur.
 - User decision: authorized the implementation role to choose and verify a provider against privacy, free-tier limits, export/deletion, and zero-recurring-cost requirements.
 - Coordinator -> Designer UX/UI: unblock UX/UI; keep the interface provider-neutral. UX/UI deliverable should specify accessible responsive planning/map behavior within the approved scope.
 - Designer UX/UI -> Développeur: implement the provider-neutral French Planning and Plan interactions, responsive behavior, states, and accessibility expectations documented above; preserve the approved scope and verify storage-provider criteria before relying on a provider. UX/UI deliverable commit: 259ae017533ac4c214ef89ee6f7b068a13a52113.
+- Développeur -> Testeur: independently validate the committed local-first app against the approved acceptance criteria, run the relevant checks, and report uncovered gaps without configuring a cloud project or claiming cross-device sync. Implementation and initial validation commit: aaa23513589ad8030659910bdd70dac9cc7caaa0.
