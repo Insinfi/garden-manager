@@ -2,7 +2,7 @@
 
 ## Status
 - Current role: Développeur
-- State: Ready for implementation
+- State: Implementation complete; commit and Testeur handoff pending.
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -109,10 +109,32 @@ UI design applies: the Designer UX/UI should define the responsive French Planni
 - No product decision remains blocking for UX/UI. The implementation role owns provider selection and must verify the ticket's privacy, free-tier, export/deletion, and zero-recurring-cost criteria; the interface remains provider-neutral.
 
 ## Implementation
-Pending Développeur.
+### Développeur — implementation complete
+
+- Added a responsive French React/TypeScript web app with **Planning** and **Plan** views. Planning combines a month calendar, selected-day list, and chronological all-task list; personal tasks can be added and existing tasks edited. Seasonal suggestions have stable plant/rule/season identities, retain edits on refresh, and are clearly labelled separately from personal tasks.
+- Added a schematic garden plan with rectangular, approximate metric areas. A user can create, select, edit, and reposition a zone by map click/tap or accessible arrow-key placement with Enter/Space confirmation and Escape cancellation. Plant/tree records link a required name/type, planting date, and selected zone.
+- Added explicit, on-demand plant advice with provenance and caveats, plus JSON export. Unknown plant names do not receive invented guidance. The plan is intentionally schematic and grows as needed; it does not establish a property boundary or compass orientation.
+- Implemented provider-neutral garden records/use cases and a repository port. Without cloud configuration, the application clearly uses browser-local storage only. The optional Supabase adapter uses authenticated access and the included owner-only RLS migration; it stores one private garden JSON document per account. No service-role key or user data is in the repository.
+- **Source limitation:** the bundled catalog contains only two regional signals from Velt (strawberries, April–August; asparagus, spring). They are observation/season reminders, not planting or harvest guarantees, and are not a Tournai-specific calendar. Further locally verified facts should be added before describing this as comprehensive local guidance. Source: [Velt seasonal calendar](https://velt.nu/seizoenskalender), reviewed 24 October 2026.
+- **Provider evidence:** official Supabase Free/pricing, production checklist, backup, secure-data/RLS, authentication, region, privacy, and DPA pages are documented in `README.md` (reviewed 24 October 2026). The checked Free tier was advertised at $0/month with example quotas (500 MB database, 50,000 MAU, 5 GB egress, 1 GB file storage, two active Free projects); it can pause a project after a week inactive and does not provide downloadable daily Free backups. The app supports JSON export; the provider documents CLI database dumps and project/account deletion. Zero cost is conditional on staying on Free without paid add-ons and cannot be guaranteed against future provider changes. The privacy policy allows potential international processing; selecting an EU database region does not prove all processing stays in the EEA or establish regulatory compliance.
+- **Not yet cleared for live use:** no Supabase account/project, credentials, real-data sync, or hosted application exists. The user must decide whether Supabase’s privacy/international-transfer caveats are acceptable, select the project region, and locally configure the project URL and publishable key (never `service_role`). Cross-device access also needs a separately selected and verified HTTPS static host. The app does not provide real-time push or automatic conflict merging; the latest saved garden loads on open/reload. Do not claim end-to-end sync is validated.
+
+### Implementation handoff boundary
+
+The local application is usable and validated, but production cloud activation is conditional on the user’s privacy/region decision, their own project configuration, and a separate hosting choice. Keep those decisions explicit; do not add sharing, photos, notes, task completion/status, or a broader plant taxonomy.
 
 ## Tests
-Pending Testeur.
+### Développeur validation (24 October 2026)
+
+- `npm run typecheck` — passed.
+- `npm test` — passed: 5 test files, 14 tests. Includes garden record/use-case checks, seasonal suggestion stability, UI workflows, keyboard placement and repositioning, Escape cancellation, and persistence failure/retry.
+- `npm run build` — passed with Vite 6.4.5.
+- `npm audit` — passed, 0 vulnerabilities.
+- `git diff --check` — passed.
+- `npm run preview -- --host 127.0.0.1`, then an HTTP fetch of `/` — HTTP 200, `lang="fr"`, and a built JavaScript asset served successfully.
+- No real Supabase project, credentials, database/RLS integration, multi-device sync, HTTPS host, or automated browser/accessibility audit was available. Those remain unverified; the independent Testeur role should exercise the local app and review the documented boundaries.
+
+Independent Testeur validation pending.
 
 ## Review
 Pending Relecteur-réfuteur.
