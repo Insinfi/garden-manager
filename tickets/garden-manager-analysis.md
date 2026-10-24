@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Testeur
-- State: Implementation committed; independent validation pending.
+- Current role: Relecteur-réfuteur
+- State: Testeur validation complete; review pending.
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -134,7 +134,22 @@ The local application is usable and validated, but production cloud activation i
 - `npm run preview -- --host 127.0.0.1`, then an HTTP fetch of `/` — HTTP 200, `lang="fr"`, and a built JavaScript asset served successfully.
 - No real Supabase project, credentials, database/RLS integration, multi-device sync, HTTPS host, or automated browser/accessibility audit was available. Those remain unverified; the independent Testeur role should exercise the local app and review the documented boundaries.
 
-Independent Testeur validation pending.
+### Testeur — independent validation (24 October 2026)
+
+- `npm test -- src/ui/App.test.tsx` — passed: 1 file, 3 tests. Independently exercised schematic zone creation and keyboard placement/reposition/cancel, plant linkage and generated suggestions, explicitly requested advice with source/caveat, personal task creation, selected-day filtering versus the chronological list, and local-save retry after failure.
+- `npm test` — passed: 5 files, 15 tests.
+- `npm run typecheck` — passed after the test additions.
+- `git diff --check` — passed.
+- Reviewed the responsive CSS breakpoints (including the phone navigation/layout) and reduced-motion rule. No real browser viewport, screen-reader, contrast, or automated accessibility audit was available; this is source inspection only, not a rendered-device/accessibility certification.
+- No production code changed. No Supabase project/service was configured or accessed, no credentials were requested or created, and no hosting or live cross-device behavior is claimed as verified.
+
+#### Independent acceptance findings
+
+- **Partial: locally relevant advice and seasonal task coverage.** The shipped catalog has only two Velt seasonal signals: strawberries (April–August) and asparagus (spring, represented by March–May). Suggestions are observation/season reminders, not planting, pruning, or harvest instructions for the user's own plant; the cited calendar is not specific to Tournai. Unknown crops correctly receive no invented advice. This limitation is disclosed in the app/ticket, but the requested locally relevant, broader beginner guidance and task coverage are not complete. No extra horticultural facts were added without verified local sources.
+- **Unverified / not yet satisfied for live cross-device use: sync and hosting.** The tested default is explicitly browser-local and does not sync. The optional authenticated Supabase path and a separate HTTPS host require user configuration, a privacy/region decision, and integration checks. Per the handoff instruction, neither was configured or accessed here. Do not mark the end-to-end sync criterion complete on the basis of this local validation.
+- The local Plan and Planning acceptance flows exercised above passed. The UI source includes responsive breakpoints and non-gesture keyboard placement, but no automated browser-level small-screen or assistive-technology check was available.
+
+These remaining acceptance items require further sourced product content and user-approved external setup; they were not changed by the Testeur validation.
 
 ## Review
 Pending Relecteur-réfuteur.
@@ -146,3 +161,4 @@ Pending Relecteur-réfuteur.
 - Coordinator -> Designer UX/UI: unblock UX/UI; keep the interface provider-neutral. UX/UI deliverable should specify accessible responsive planning/map behavior within the approved scope.
 - Designer UX/UI -> Développeur: implement the provider-neutral French Planning and Plan interactions, responsive behavior, states, and accessibility expectations documented above; preserve the approved scope and verify storage-provider criteria before relying on a provider. UX/UI deliverable commit: 259ae017533ac4c214ef89ee6f7b068a13a52113.
 - Développeur -> Testeur: independently validate the committed local-first app against the approved acceptance criteria, run the relevant checks, and report uncovered gaps without configuring a cloud project or claiming cross-device sync. Implementation and initial validation commit: aaa23513589ad8030659910bdd70dac9cc7caaa0.
+- Testeur -> Relecteur-réfuteur: independent local-flow tests pass; review the two remaining acceptance gaps recorded above (limited/non-Tournai-specific garden guidance and unverified live sync/hosting). Testeur validation commit: to be recorded in the Relecteur-réfuteur handoff.

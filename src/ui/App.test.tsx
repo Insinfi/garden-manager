@@ -46,9 +46,36 @@ describe("potager planner flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Enregistrer la plante" }));
 
     await waitFor(() => expect(screen.getByText("Fraisier")).toBeInTheDocument());
+    expect(screen.queryByRole("dialog", { name: /Conseils pour/ })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Planning" }));
+    fireEvent.click(screen.getByRole("button", { name: "Conseils : Fraisier" }));
+    expect(await screen.findByRole("dialog", { name: "Conseils pour Fraisier" })).toBeInTheDocument();
+    expect(screen.getByText(/Velt indique une période d’avril à août/)).toBeInTheDocument();
+    expect(screen.getByText(/La variété, la météo, le microclimat/)).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("button", { name: "Fermer" })[1]);
     fireEvent.click(screen.getByRole("button", { name: "Toutes les tâches" }));
     await waitFor(() => expect(screen.getAllByRole("button", { name: /Modifier la tâche suggérée/ })).toHaveLength(5));
+  });
+
+  it("adds a personal task and filters the chronological list by the selected calendar day", async () => {
+    render(<App />);
+
+    await waitFor(() => expect(screen.getAllByRole("button", { name: "Ajouter une tâche personnelle" })[0]).toBeEnabled());
+    fireEvent.click(screen.getAllByRole("button", { name: "Ajouter une tâche personnelle" })[0]);
+    fireEvent.change(screen.getByLabelText("Nom de la tâche"), { target: { value: "Préparer les étiquettes" } });
+    fireEvent.click(screen.getByRole("button", { name: "Ajouter la tâche" }));
+
+    expect(await screen.findByRole("button", { name: /Modifier la tâche personnelle : Préparer les étiquettes/ })).toBeInTheDocument();
+    expect(screen.getByText("Personnelle")).toBeInTheDocument();
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowLabel = new Intl.DateTimeFormat("fr-BE", { dateStyle: "full" }).format(tomorrow);
+    fireEvent.click(screen.getByRole("button", { name: tomorrowLabel }));
+    expect(screen.getByText("Aucune tâche ce jour-là")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Toutes les tâches" }));
+    expect(screen.getByRole("button", { name: /Modifier la tâche personnelle : Préparer les étiquettes/ })).toBeInTheDocument();
   });
 
   it("keeps a failed placement available for save retry", async () => {
