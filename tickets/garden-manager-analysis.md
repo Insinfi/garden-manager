@@ -1,8 +1,8 @@
 # Ticket: Beginner-friendly potager planner
 
 ## Status
-- Current role: Analyste (user decisions required)
-- State: Re-review is blocked. The full Tournai-relevant guidance/task criterion remains unmet, and the selected providers' privacy terms have not been accepted or configured. No production deployment, migration execution, or two-device verification exists. Do not mark complete or imply that either acceptance criterion passed.
+- Current role: Analyste
+- State: Re-review remains blocked. The user accepted Supabase and Cloudflare's documented privacy/processing caveats on 31 October 2026. Full Tournai-relevant guidance/task coverage remains unmet, and no production deployment, migration execution, or two-device verification exists. Do not mark complete or imply that either remaining acceptance criterion passed.
 
 ## Request and context
 Create a beginner-friendly garden app focused on a potager, with a garden map and a task-planning view. It should be comfortable to read on a phone and primarily used for editing on a PC, while still allowing edits on a phone. The user wants to grow fruit and vegetables despite having no farming experience.
@@ -23,14 +23,14 @@ This initial product scope supports planning a garden, managing plants and trees
 - The user should be able to create plant and tree records containing at least a name/type, location on the plan, and planting date.
 - Changes made on the PC should sync to the user's phone over the internet.
 - The first version is for the user's personal garden and own devices; multi-person sharing is out of scope.
-- Managed online storage is acceptable for PC/phone sync if an EU data region, current privacy terms, private access controls, free-tier limits, and export/deletion options are verified. No provider is pre-approved; there must be no recurring cost for the intended personal use, and garden data must remain private.
-- The implementation role may select a free HTTPS host if garden data remains private. Any account or deployment setup the role cannot perform must be documented clearly. This does not authorize public access or a recurring-cost service.
+- The user accepted Supabase (Frankfurt EU primary database region) and Cloudflare Pages, including the documented caveat that account, logs, backups, or access metadata may involve processing outside the EU/EEA; this is not a claim of legal compliance. This acceptance does not waive private access controls, cost/free-tier verification, export/deletion, or live-sync requirements.
+- The implementation role may use Cloudflare Pages as a free HTTPS host if garden data remains private. Any account or deployment setup the role cannot perform must be documented clearly. This does not authorize public access or a recurring-cost service.
 - Provider terms, limits, and availability may change. An EU primary data region alone must not be represented as proof that every service process remains in the EU/EEA or as proof of legal compliance; record relevant processing and privacy caveats when verifying a provider.
 - Initial Analyste audit: the repository then contained workflow documentation, agent definitions, and skills, but no application source code, tests, or runtime configuration. The implementation and validation recorded below have since been added.
 
 ## Blocking questions
-- None currently block handoff to Architecte. The user confirmed the full recommendation/task scope and the conditional storage/hosting constraints above; no scope reduction or specific provider was approved.
-- Before live use, the chosen storage and host must be checked against the recorded constraints. If no suitable provider can be verified, or its terms create a material privacy decision not settled by these constraints, return to the user rather than assuming acceptance.
+- No new product decision is required to create this PR. Full Tournai-relevant guidance/task coverage is still an implementation gap and must not be reduced or described as complete.
+- Live cloud use remains blocked on user-owned project/account configuration and real deployment/access-control/two-device verification. If setup is needed, document the precise steps and keep the sync acceptance criterion unmet until verified.
 
 ## Acceptance criteria
 - The application offers French-language Planning and Plan views, readable on phone and usable for editing on PC and phone.
@@ -251,6 +251,7 @@ These remaining acceptance items require further sourced product content and use
 - Testeur -> Relecteur-réfuteur follow-up: commit `b6a2110` tightens the UPDATE policy regression assertion to require owner checks in both `USING` and `WITH CHECK`; focused and full tests, typecheck, build, and `git diff --check` passed. Please review this test-only refinement in addition to the previously handed-off evidence; both acceptance blockers remain open.
 - Relecteur-réfuteur -> Testeur: confirmed commit `b6a2110` independently asserts both UPDATE owner guards; focused test passed (1 file, 2 tests). Approved the test-only refinement and confirmed both prior P1 blockers remain open. No files/commit from reviewer. The ticket status was updated to reflect completed Testeur validation/review without implying acceptance.
 - Relecteur-réfuteur -> Analyste/user: fresh review of Developer commit `7ee2d1e` and Testeur follow-ups `eb74e31`, `b6a2110`, `0e3a793`, `c7d24e3` confirms that the starter catalog and source-backed rules are careful but do not meet the full Tournai-relevant guidance/task acceptance criterion. Before any scope or provider is treated as accepted, obtain the user's decision on a reliable source strategy that can support the full agreed locality/scope, and explicit acceptance (or an alternative choice) for Supabase's and Cloudflare's current privacy/processing terms. Keep the two P1 gates open. Once those decisions are recorded, route the approved evidence/setup work to Développeur; any cloud acceptance still requires user setup and a real deployment, applied migration/policy inspection, denied-access checks, and a two-device save/reload test. Review notes are committed by Relecteur-réfuteur; the commit hash is in the final handoff.
+- User decision (31 October 2026): accepted Supabase (Frankfurt EU primary database region) and Cloudflare Pages with the documented possible non-EU/EEA processing caveats; this is not legal-compliance approval. This resolves provider-choice acceptance only; guidance coverage and live sync/deployment remain unmet/unverified.
 
 ### Relecteur-réfuteur — Developer follow-up review (24 October 2026)
 
@@ -268,7 +269,7 @@ These remaining acceptance items require further sourced product content and use
 
    The `VITE_*` URL/publishable-or-legacy-anon key are intentionally public client configuration; `.env.example` contains placeholders only, and no service-role/secret key or real credentials are present. The migration (`supabase/migrations/0001_private_gardens.sql:10-34`) enables RLS, revokes `anon`, grants the authenticated role, and owner-scopes select/insert/update/delete. `src/infrastructure/repository.ts:43-90` enables the browser client only when both public settings exist and writes the authenticated user's owner id. The Testeur's migration/header regression test checks source text, not a deployed database or host.
 
-   **The required user choice has not happened:** current README instructions expressly require the user to review and accept current Supabase and Cloudflare terms, including possible international processing of account/log data and Cloudflare access metadata. Neither provider is pre-approved by the ticket. No actual Supabase project/region, executed migration, deployed RLS inspection, Cloudflare Pages project/HTTPS URL, production configuration, unauthenticated or other-account denial test, or two-device save/reload check exists. A migration file, static-host instructions, and passing local tests do not prove live private sync. Do not ask for or use credentials in this review. **Handoff to Analyste/user** to obtain explicit acceptance of these specific providers/processing caveats or a different provider/host decision; only then proceed with user-owned setup and the required live verification. Keep online sync acceptance unmet until that evidence exists.
+   At review time, the required provider choice had not happened. The user subsequently accepted Supabase and Cloudflare Pages with the documented possible non-EU/EEA processing caveats on 31 October 2026. That resolves provider-choice acceptance only. No actual Supabase project/region, executed migration, deployed RLS inspection, Cloudflare Pages project/HTTPS URL, production configuration, unauthenticated or other-account denial test, or two-device save/reload check exists. A migration file, static-host instructions, and passing local tests do not prove live private sync. Do not ask for or use credentials in this review. The live-sync acceptance criterion remains unmet until user-owned setup and required verification are complete.
 
 #### Checks and non-blocking observations
 
